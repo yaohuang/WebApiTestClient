@@ -9,27 +9,34 @@ var emptyTestClientModel =
 };
 
 (function () {
+    function BuildUriPath(template, uriParameters) {
+        var path = template;
+        for (var i in uriParameters) {
+            var parameter = uriParameters[i];
+            var variableName = '{' + parameter.name + '}';
+            var parameterValue = parameter.value();
+            if (parameterValue != "") {
+                path = path.replace(variableName, parameterValue);
+            }
+        }
+        return path;
+    }
+
     function TestClientViewModel(data) {
         var self = this;
         self.HttpMethod = ko.observable(data.HttpMethod);
         self.UriPathTemplate = data.UriPathTemplate;
         self.UriPath = ko.observable(self.UriPathTemplate);
 
-        self.UriParameters = data.UriParameters.map(function (parameter) {
-            var uriParameterValue = ko.observable(parameter.value);
+        self.UriParameters = new Array();
+        for (var i in data.UriParameters) {
+            var uriParameter = data.UriParameters[i];
+            var uriParameterValue = ko.observable(uriParameter.value);
             uriParameterValue.subscribe(function () {
-                var path = self.UriPathTemplate;
-                self.UriParameters.forEach(function (parameter) {
-                    var variableName = '{' + parameter.name + '}';
-                    var value = parameter.value();
-                    if (value != "") {
-                        path = path.replace(variableName, value);
-                    }
-                });
-                self.UriPath(path);
+                self.UriPath(BuildUriPath(self.UriPathTemplate, self.UriParameters));
             });
-            return { name: parameter.name, value: uriParameterValue };
-        });
+            self.UriParameters.push({ name: uriParameter.name, value: uriParameterValue });
+        }
 
         self.RequestHeaders = ko.observableArray();
 
@@ -47,14 +54,15 @@ var emptyTestClientModel =
 
         self.RequestMediaType.subscribe(function () {
             self.RequestBody(decodeSample(data.Samples[self.RequestMediaType()]) || "");
-        });
-
-        self.RequestBody.subscribe(function () {
             var headers = self.RequestHeaders;
             var mediaType = self.RequestMediaType();
             if (mediaType && mediaType != "") {
                 addOrReplaceHeader(headers, "content-type", mediaType);
             }
+        });
+
+        self.RequestBody.subscribe(function () {
+            var headers = self.RequestHeaders;
             var contentLengh = self.RequestBody().length;
             addOrReplaceHeader(headers, "content-length", contentLengh);
         });

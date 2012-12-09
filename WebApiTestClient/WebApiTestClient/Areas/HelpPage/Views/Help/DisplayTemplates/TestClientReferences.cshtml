@@ -1,6 +1,16 @@
 <link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" />
 <link href="~/Areas/HelpPage/TestClient.css" rel="stylesheet" />
-<script src="~/Scripts/jquery-1.7.1.js"></script>
-<script src="~/Scripts/jquery-ui-1.8.20.js"></script>
-<script src="~/Scripts/knockout-2.1.0.js" defer="defer"></script>
+@* Automatically grabs the installed version of JQuery/JQueryUI/KnockoutJS *@
+@foreach (var item in Directory.EnumerateFiles(Server.MapPath(@"~/Scripts"), "jquery-?.?.?.js"))
+{
+  <script src="~/Scripts/@Path.GetFileName(item)"></script>
+}
+@foreach (var item in Directory.EnumerateFiles(Server.MapPath(@"~/Scripts"), "jquery-ui-?.?.?.js"))
+{
+  <script src="~/Scripts/@Path.GetFileName(item)"></script>
+}
+@foreach (var item in Directory.EnumerateFiles(Server.MapPath(@"~/Scripts"), "knockout-?.?.?.js"))
+{
+  <script src="~/Scripts/@Path.GetFileName(item)" defer="defer"></script>
+}
 <script src="~/Scripts/WebApiTestClient.js" defer="defer"></script>
