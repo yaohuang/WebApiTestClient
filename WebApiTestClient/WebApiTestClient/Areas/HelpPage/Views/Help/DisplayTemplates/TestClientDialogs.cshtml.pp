@@ -13,16 +13,16 @@
 
 <button id="testClientButton">Test API</button>
 <div id="testClientDialog" title="@description.HttpMethod @description.RelativePath">
-  <input class="httpMethod" data-bind="value: HttpMethod" />
-  <input class="uriPath" data-bind="value: UriPath" />
+  <input class="httpMethod" spellcheck="false" data-bind="value: HttpMethod" />
+  <input class="uriPath" spellcheck="false" data-bind="value: UriPath" />
   <div data-bind="visible: UriParameters.length > 0">
     <h5 class="ui-widget-header">URI parameters</h5>
     <div class="panel">
       <div data-bind="foreach: UriParameters">
         <div>
-          <input readonly="true" tabindex="100" class="uriParameterLabel" data-bind="value: '{' + name + '}'" />
+          <input readonly="true" spellcheck="false" tabindex="100" class="uriParameterLabel" data-bind="value: '{' + name + '}'" />
           <span>= </span>
-          <input data-bind="value: value, valueUpdate: 'afterkeydown'" />
+          <input spellcheck="false" data-bind="value: value, valueUpdate: 'afterkeydown'" />
         </div>
       </div>
     </div>
@@ -32,9 +32,9 @@
   <div class="panel">
     <div data-bind="foreach: RequestHeaders">
       <div>
-        <input data-bind='value: name, uniqueName: true' />
+        <input spellcheck="false" data-bind='value: name, uniqueName: true' />
         <span>: </span>
-        <input data-bind='  value: value, uniqueName: true' />
+        <input spellcheck="false" data-bind='value: value, uniqueName: true' />
         <a href='#' data-bind='click: $root.removeHeader'>Delete</a>
       </div>
     </div>
@@ -46,7 +46,7 @@
       <span>Samples: </span>
       <select data-bind="options: SampleTypes, value: RequestMediaType"></select>
     </div>
-    <pre><textarea class="sampleArea" data-bind="value: RequestBody, valueUpdate: 'afterkeydown'" rows="7"></textarea></pre>
+    <pre><textarea class="sampleArea" spellcheck="false" data-bind="value: RequestBody, valueUpdate: 'afterkeydown'" rows="7"></textarea></pre>
   </div>
 </div>
 
@@ -57,11 +57,11 @@
   </div>
   <div class="responseHeaderDiv">
     <h5 class="ui-widget-header">Headers</h5>
-    <textarea data-bind="value: headers" class="sampleArea" readonly='readonly' rows="6"></textarea>
+    <textarea spellcheck="false" data-bind="value: headers" class="sampleArea" readonly='readonly' rows="6"></textarea>
   </div>
   <div class="responseBodyDiv">
     <h5 class="ui-widget-header">Body</h5>
-    <textarea data-bind="value: content" class="sampleArea" readonly='readonly' rows="10"></textarea>
+    <textarea spellcheck="false" data-bind="value: content" class="sampleArea" readonly='readonly' rows="10"></textarea>
   </div>
 </div>
 
