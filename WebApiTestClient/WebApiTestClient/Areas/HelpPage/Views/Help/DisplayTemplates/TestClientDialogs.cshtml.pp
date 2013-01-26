@@ -68,7 +68,7 @@
 <script>
   testClientModel = {
     HttpMethod: '@Model.ApiDescription.HttpMethod',
-    UriPathTemplate: '@Html.Raw(Model.ApiDescription.RelativePath)',
+    UriPathTemplate: @Html.Raw(@Json.Encode(Model.ApiDescription.RelativePath)),
     UriParameters: [
             @foreach (var parameter in Model.ApiDescription.ParameterDescriptions)
             {
