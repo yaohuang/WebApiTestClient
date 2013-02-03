@@ -83,7 +83,7 @@ var emptyTestClientModel =
             var uri = self.baseAddress() + self.UriPath();
             var httpMethod = self.HttpMethod();
             var headers = self.RequestHeaders();
-            var requestBody = self.RequestBody();
+            var requestBody = self.ShouldShowBody() ? self.RequestBody() : null;
             SendRequest(httpMethod, uri, headers, requestBody, function (httpRequest) {
                 var httpResponse = getHttpResponse(httpRequest);
                 self.response(httpResponse);
@@ -176,20 +176,13 @@ function SendRequest(httpMethod, url, requestHeaders, requestBody, handleRespons
         return false;
     }
 
-    if ($.browser.mozilla) {
-        httpRequest.onload = httpRequest.onerror = httpRequest.onabort = function () {
-            handleResponse(httpRequest);
-        };
-    }
-    else {
-        httpRequest.onreadystatechange = function () {
-            switch (this.readyState) {
-                case 4:
-                    handleResponse(httpRequest);
-                    break;
-                default:
-                    break;
-            }
+    httpRequest.onreadystatechange = function () {
+        switch (this.readyState) {
+            case 4:
+                handleResponse(httpRequest);
+                break;
+            default:
+                break;
         }
     }
 
@@ -198,6 +191,7 @@ function SendRequest(httpMethod, url, requestHeaders, requestBody, handleRespons
     }
 
     httpRequest.send(requestBody);
+
     return true;
 }
 
