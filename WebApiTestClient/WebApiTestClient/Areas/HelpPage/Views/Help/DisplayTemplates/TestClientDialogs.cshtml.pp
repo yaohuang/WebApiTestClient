@@ -61,7 +61,18 @@
   </div>
   <div class="responseBodyDiv">
     <h5 class="ui-widget-header">Body</h5>
-    <textarea spellcheck="false" data-bind="value: content" class="sampleArea" readonly='readonly' rows="10"></textarea>
+    <div id="responseTabsLinks">
+		<ul>
+			<li><a href="#rawResponseTab">Raw</a></li>
+			<li data-bind="visible:formattedContent!=null"><a href="#formattedResponseTab">Formatted</a></li>
+		</ul>
+		<div id="rawResponseTab">
+			<textarea spellcheck="false" data-bind="value: content" class="sampleArea" readonly='readonly' rows="10"></textarea>
+		</div>
+		<div id="formattedResponseTab">
+			<div class="formattedJson" data-bind="text: formattedContent"></div>
+		</div>
+	</div> 
   </div>
 </div>
 

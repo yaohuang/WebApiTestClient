@@ -22,6 +22,128 @@ var emptyTestClientModel =
         return path;
     }
 
+    function decodeSample(sampleString) {
+        return unescape(sampleString).replace(/\+/gi, " ").replace(/\r\n/gi, "\n");
+    }
+
+    function addOrReplaceHeader(headers, headerName, headerValue) {
+        var headerList = headers();
+        for (var i in headerList) {
+            if (headerList[i].name.toLowerCase() == headerName) {
+                headers.replace(headerList[i], { name: headerList[i].name, value: headerValue });
+                return;
+            }
+        }
+        headers.push({ name: headerName, value: headerValue });
+    }
+
+    function SendRequest(httpMethod, url, requestHeaders, requestBody, handleResponse) {
+        if (httpMethod.length == 0) {
+            alert("HTTP Method should not be empty");
+            return false;
+        }
+
+        if (url.length == 0) {
+            alert("Url should not be empty");
+            return false;
+        }
+
+        var httpRequest = new XMLHttpRequest();
+        try {
+            httpRequest.open(httpMethod, encodeURI(url), false);
+        }
+        catch (e) {
+            alert("Cannot send request. Check the security setting of your browser if you are sending request to a different domain.");
+            return false;
+        }
+
+        httpRequest.setRequestHeader("If-Modified-Since", new Date(0));
+        try {
+            for (var i in requestHeaders) {
+                var header = requestHeaders[i];
+                httpRequest.setRequestHeader(header.name, header.value);
+            }
+        } catch (e) {
+            alert("Invalid header.");
+            return false;
+        }
+
+        httpRequest.onreadystatechange = function () {
+            switch (this.readyState) {
+                case 4:
+                    handleResponse(httpRequest);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        httpRequest.ontimeout = function () {
+            alert("Request timed out.");
+        };
+
+        httpRequest.send(requestBody);
+
+        return true;
+    }
+
+    function getFormattedJson(json) {
+        var result = vkbeautify.json(json);
+        return result;
+    }
+
+    function getFormattedXml(xml) {
+        var result = vkbeautify.xml(xml);
+        return result;
+    }
+
+    var ContentTypes = {
+        JSON: "application/json",
+        XML: "text/xml"
+    };
+
+    function getFormattedContent(rawResponse, contentType) {
+        if (contentType.is(ContentTypes.JSON)) {
+            return getFormattedJson(rawResponse);
+        }
+        else if (contentType.is(ContentTypes.XML)) {
+            return getFormattedXml(rawResponse);
+        }
+
+        return null;
+    }
+
+    function getContentType(request) {
+        var result = function () {
+            var self = this;
+            self.value = request.getResponseHeader('content-type');
+            self.is = function (expectedContentType) {
+                return self.value.indexOf(expectedContentType) > -1;
+            };
+            return self;
+        };
+        return new result();
+    }
+
+    function getHttpResponse(httpRequest) {
+        var statusCode = httpRequest.status,
+            statusText = httpRequest.statusText,
+            responseHeaders = httpRequest.getAllResponseHeaders(),
+            rawResponse = httpRequest.responseText,
+            contentType = getContentType(httpRequest),
+            formattedResponse = getFormattedContent(rawResponse, contentType);
+
+        // IE - #1450: sometimes returns 1223 when it should be 204
+        if (statusCode === 1223) {
+            statusCode = 204;
+            statusText = "No Content";
+        }
+
+        var responseStatus = statusCode + "/" + statusText;
+
+        return { status: responseStatus, headers: responseHeaders, content: rawResponse, formattedContent: formattedResponse };
+    }
+
     function TestClientViewModel(data) {
         var self = this;
         self.HttpMethod = ko.observable(data.HttpMethod);
@@ -99,7 +221,7 @@ var emptyTestClientModel =
             open: function () {
                 jQuery('.ui-widget-overlay').bind('click', function () {
                     jQuery('#testClientDialog').dialog('close');
-                })
+                });
             },
             buttons: {
                 "Send": function () {
@@ -114,9 +236,10 @@ var emptyTestClientModel =
             width: "550",
             modal: true,
             open: function () {
+                $("#responseTabsLinks").tabs({ selected: 0 });
                 jQuery('.ui-widget-overlay').bind('click', function () {
                     jQuery('#testClientResponseDialog').dialog('close');
-                })
+                });
             }
         });
 
@@ -130,84 +253,3 @@ var emptyTestClientModel =
     ko.applyBindings(new TestClientViewModel(initialModel));
 })();
 
-function decodeSample(sampleString) {
-    return unescape(sampleString).replace(/\+/gi, " ").replace(/\r\n/gi, "\n");
-}
-
-function addOrReplaceHeader(headers, headerName, headerValue) {
-    var headerList = headers();
-    for (var i in headerList) {
-        if (headerList[i].name.toLowerCase() == headerName) {
-            headers.replace(headerList[i], { name: headerList[i].name, value: headerValue });
-            return;
-        }
-    }
-    headers.push({ name: headerName, value: headerValue });
-}
-
-function SendRequest(httpMethod, url, requestHeaders, requestBody, handleResponse) {
-    if (httpMethod.length == 0) {
-        alert("HTTP Method should not be empty");
-        return false;
-    }
-
-    if (url.length == 0) {
-        alert("Url should not be empty");
-        return false;
-    }
-
-    var httpRequest = new XMLHttpRequest();
-    try {
-        httpRequest.open(httpMethod, encodeURI(url), false);
-    }
-    catch (e) {
-        alert("Cannot send request. Check the security setting of your browser if you are sending request to a different domain.");
-        return false;
-    }
-
-    httpRequest.setRequestHeader("If-Modified-Since", new Date(0));
-    try {
-        for (var i in requestHeaders) {
-            var header = requestHeaders[i];
-            httpRequest.setRequestHeader(header.name, header.value);
-        }
-    } catch (e) {
-        alert("Invalid header.");
-        return false;
-    }
-
-    httpRequest.onreadystatechange = function () {
-        switch (this.readyState) {
-            case 4:
-                handleResponse(httpRequest);
-                break;
-            default:
-                break;
-        }
-    }
-
-    httpRequest.ontimeout = function () {
-        alert("Request timed out.");
-    }
-
-    httpRequest.send(requestBody);
-
-    return true;
-}
-
-function getHttpResponse(httpRequest) {
-    var statusCode = httpRequest.status;
-    var statusText = httpRequest.statusText;
-    var responseHeaders = httpRequest.getAllResponseHeaders();
-    var rawResponse = httpRequest.responseText;
-
-    // IE - #1450: sometimes returns 1223 when it should be 204
-    if (statusCode === 1223) {
-        statusCode = 204;
-        statusText = "No Content";
-    }
-
-    var responseStatus = statusCode + "/" + statusText;
-
-    return { status: responseStatus, headers: responseHeaders, content: rawResponse };
-}
