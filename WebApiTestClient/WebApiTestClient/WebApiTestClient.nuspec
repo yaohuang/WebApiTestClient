@@ -22,5 +22,6 @@
         <file src="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" target="content\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" />
         <file src="Areas\HelpPage\TestClient.css" target="content\Areas\HelpPage\TestClient.css" />
         <file src="Scripts\WebApiTestClient.js" target="content\Scripts\WebApiTestClient.js" />
+        <file src="Scripts\vkbeautify.js" target="content\Scripts\vkbeautify.js" />
     </files>
 </package>
