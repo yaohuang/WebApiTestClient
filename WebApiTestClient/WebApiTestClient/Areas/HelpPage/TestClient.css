@@ -36,3 +36,14 @@ select {
     float: left;
     border: none;
 }
+
+.formattedJson {
+    white-space: pre;
+    width:300px;
+    height:300px;
+}
+
+#formattedResponseTab {
+    overflow:auto;
+    height:400px
+}
