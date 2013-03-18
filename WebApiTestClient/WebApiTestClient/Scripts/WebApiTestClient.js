@@ -75,12 +75,18 @@ var emptyTestClientModel =
             self.RequestHeaders.remove(header);
         };
 
-        self.baseAddress = ko.observable(data.BaseAddress);
-
         self.response = ko.observable();
 
         self.sendRequest = function () {
-            var uri = self.baseAddress() + self.UriPath();
+            var uriPath = self.UriPath();
+            var http = "http://";
+            var https = "https://";
+
+            // Just take the entire uriPath if it's an absolute URI.
+            var uri = (uriPath.slice(0, http.length) == http || uriPath.slice(0, https.length) == https) ?
+                uriPath :
+                data.BaseAddress + uriPath;
+
             var httpMethod = self.HttpMethod();
             var headers = self.RequestHeaders();
             var requestBody = self.ShouldShowBody() ? self.RequestBody() : null;
@@ -165,7 +171,6 @@ function SendRequest(httpMethod, url, requestHeaders, requestBody, handleRespons
         return false;
     }
 
-    httpRequest.setRequestHeader("If-Modified-Since", new Date(0));
     try {
         for (var i in requestHeaders) {
             var header = requestHeaders[i];
@@ -190,7 +195,12 @@ function SendRequest(httpMethod, url, requestHeaders, requestBody, handleRespons
         alert("Request timed out.");
     }
 
-    httpRequest.send(requestBody);
+    try {
+        httpRequest.send(requestBody);
+    } catch (e) {
+        alert(e);
+        return false;
+    }
 
     return true;
 }

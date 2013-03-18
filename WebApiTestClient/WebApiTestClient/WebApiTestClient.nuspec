@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata>
         <id>WebApiTestClient</id>
-        <version>0.0.5-alpha</version>
+        <version>1.0.0</version>
         <title>A Simple Test Client for ASP.NET Web API</title>
         <authors>yaohuang</authors>
         <owners />
@@ -14,7 +14,7 @@
         <language>en-US</language>
         <tags>ASP.NET Web API Test Client</tags>
         <dependencies>
-            <dependency id="Microsoft.AspNet.WebApi.HelpPage" version="0.2.0-alpha" />
+            <dependency id="Microsoft.AspNet.WebApi.HelpPage" version="4.0.0" />
         </dependencies>
     </metadata>
     <files>
