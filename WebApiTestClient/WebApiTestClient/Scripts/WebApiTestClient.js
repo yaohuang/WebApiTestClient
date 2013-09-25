@@ -194,6 +194,20 @@ function SendRequest(httpMethod, url, requestHeaders, requestBody, handleRespons
         return false;
     }
 
+	// Remove parameters with placeholder from the query parameters, since they should be empty for optional parameters.
+    var urlParts = url.split("?");
+    if (urlParts.length > 1) {
+        var resultQuery = [];
+        var queryParameters = urlParts[1].split("&");
+        for (var i = 0; i < queryParameters.length; ++i) {
+            // Add this parameter to the result only if it contains value.
+            if (!/{.*}/.test(queryParameters[i])) {
+                resultQuery.push(queryParameters[i]);
+            }
+        }
+        url = urlParts[0] + "?" + resultQuery.join("&");
+    }
+	
     var httpRequest = new XMLHttpRequest();
     try {
         httpRequest.open(httpMethod, encodeURI(url), false);
