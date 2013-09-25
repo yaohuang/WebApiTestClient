@@ -24,5 +24,8 @@
         <file src="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" target="content\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" />
         <file src="Areas\HelpPage\TestClient.css" target="content\Areas\HelpPage\TestClient.css" />
         <file src="Scripts\WebApiTestClient.js" target="content\Scripts\WebApiTestClient.js" />
+        <file src="tools\install.ps1" target="tools\install.ps1" />
+        <file src="tools\uninstall.ps1" target="tools\uninstall.ps1" />
+        <file src="readme.txt" target="readme.txt" />
     </files>
 </package>
