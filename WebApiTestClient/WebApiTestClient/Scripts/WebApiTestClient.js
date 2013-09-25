@@ -13,12 +13,40 @@ var emptyTestClientModel =
         var path = template;
         for (var i in uriParameters) {
             var parameter = uriParameters[i];
-            var variableName = '{' + parameter.name + '}';
-            var parameterValue = parameter.value();
-            if (parameterValue != "") {
-                path = path.replace(variableName, parameterValue);
+            if (parameter.enabled()) {
+                var parameterValue = parameter.value();
+                if (parameterValue != "") {
+                    var variableName = '{' + parameter.name + '}';
+                    path = path.replace(variableName, parameterValue);
+                }
+            }
+            else {
+                path = RemoveUriParameter(path, parameter.name)
             }
         }
+
+        // cleanup path
+        path = path.replace("/?", "?");
+        path = path.replace("?&", "?");
+
+        // remove trailing '?'
+        if (path.charAt(path.length - 1) == '?') {
+            path = path.substr(0, path.length - 1);
+        }
+        // remove trailing '&'
+        if (path.charAt(path.length - 1) == '&') {
+            path = path.substr(0, path.length - 1);
+        }
+
+        return path;
+    }
+
+    function RemoveUriParameter(template, parameterToRemove) {
+        var path = template;
+        var urlParameter = '{' + parameterToRemove + '}';
+        var queryParameter = parameterToRemove + '=' + urlParameter;
+        path = path.replace(queryParameter, "");
+        path = path.replace(urlParameter, "");
         return path;
     }
 
@@ -32,10 +60,14 @@ var emptyTestClientModel =
         for (var i in data.UriParameters) {
             var uriParameter = data.UriParameters[i];
             var uriParameterValue = ko.observable(uriParameter.value);
+            var parameterEnabled = ko.observable(true);
             uriParameterValue.subscribe(function () {
                 self.UriPath(BuildUriPath(self.UriPathTemplate, self.UriParameters));
             });
-            self.UriParameters.push({ name: uriParameter.name, value: uriParameterValue });
+            parameterEnabled.subscribe(function () {
+                self.UriPath(BuildUriPath(self.UriPathTemplate, self.UriParameters));
+            });
+            self.UriParameters.push({ name: uriParameter.name, value: uriParameterValue, enabled: parameterEnabled });
         }
 
         self.RequestHeaders = ko.observableArray();

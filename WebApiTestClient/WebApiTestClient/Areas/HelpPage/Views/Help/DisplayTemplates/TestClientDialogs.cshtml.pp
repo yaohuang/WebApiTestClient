@@ -22,7 +22,8 @@
         <div>
           <input readonly="true" spellcheck="false" tabindex="100" class="uriParameterLabel" data-bind="value: '{' + name + '}'" />
           <span>= </span>
-          <input spellcheck="false" data-bind="value: value, valueUpdate: 'afterkeydown'" />
+          <input spellcheck="false" data-bind="value: value, valueUpdate: 'afterkeydown', enable: enabled" />
+          <input type="checkbox" data-bind="checked: enabled" />
         </div>
       </div>
     </div>
