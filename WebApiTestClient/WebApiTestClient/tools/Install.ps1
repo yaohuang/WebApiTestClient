@@ -4,6 +4,13 @@ if($file) {
     $file.Open()
     $file.Document.Activate()
     $file.Document.Selection.StartOfDocument()
-    $file.Document.ReplaceText("@section Scripts {", "@Html.DisplayForModel(`"TestClientDialogs`")`n@section Scripts {`n    @Html.DisplayForModel(`"TestClientReferences`")")
-	$file.Save()
+	if(!$file.Document.MarkText("@Html.DisplayForModel(`"TestClientDialogs`")"))
+	{
+		$file.Document.ReplaceText("@section Scripts {", "@Html.DisplayForModel(`"TestClientDialogs`")`n@section Scripts {`n    @Html.DisplayForModel(`"TestClientReferences`")")
+		$file.Save()
+	}
+	else
+	{
+		$file.Document.ClearBookmarks()
+	}
 }
