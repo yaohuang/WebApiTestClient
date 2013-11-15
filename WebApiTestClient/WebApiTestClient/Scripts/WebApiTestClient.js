@@ -47,6 +47,13 @@ var emptyTestClientModel =
         var queryParameter = parameterToRemove + '=' + urlParameter;
         path = path.replace(queryParameter, "");
         path = path.replace(urlParameter, "");
+
+        path = path.replace("/?", "?");
+        path = path.replace("?&", "?");
+        path = path.replace("&&", "&");
+        if (path.charAt(path.length - 1) == '&') {
+            path = path.substr(0, path.length - 1);
+        }
         return path;
     }
 
