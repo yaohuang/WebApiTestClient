@@ -75,8 +75,18 @@
             {
               if (parameter.Source == System.Web.Http.Description.ApiParameterSource.FromUri)
               {
-                    @:{ name: "@parameter.Name", value: "" },
-                }
+                  if (parameter.ParameterDescriptor.ParameterType.IsClass)
+                  {
+                      foreach (var property in parameter.ParameterDescriptor.ParameterType.GetProperties())
+                      {
+                          @:{ name: "@property.Name", value: "" },
+                      }
+                  }
+                  else
+                  {
+                      @:{ name: "@parameter.Name", value: "" },
+                  }
+              }
             }
     ],
     Samples: {
