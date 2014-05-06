@@ -31,9 +31,13 @@
   <h5 class="ui-widget-header">Headers | <a style="text-decoration: underline" href="#" data-bind="click: addHeader">Add header</a>
   </h5>
   <div class="panel">
+    <datalist id="headersList" data-bind="foreach: headersList">
+      <option data-bind="value: $data">
+    </datalist>
+  
     <div data-bind="foreach: RequestHeaders">
       <div>
-        <input spellcheck="false" data-bind='value: name, uniqueName: true' />
+        <input spellcheck="false" list="headersList" data-bind='value: name, uniqueName: true' />
         <span>: </span>
         <input spellcheck="false" data-bind='value: value, uniqueName: true' />
         <a href='#' data-bind='click: $root.removeHeader'>Delete</a>
