@@ -1,6 +1,10 @@
 # Web API Test Client
 A simple Test Client built on top of ASP.NET Web API Help Page.
 
+##change log
+v 1.2 2014.6.18 work for ASP.NET Web API Help Page >=5.1
+
+
 ## Documentation
 http://blogs.msdn.com/b/yaohuang1/archive/2012/12/04/10373804.aspx
 
