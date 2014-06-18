@@ -2,7 +2,7 @@
 A simple Test Client built on top of ASP.NET Web API Help Page.
 
 ##change log
-v 1.2 2014.6.18 work for ASP.NET Web API Help Page >=5.1
+V1.2  work for ASP.NET Web API Help Page >=5.1, at 2014.6.18
 
 
 ## Documentation
