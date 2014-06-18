@@ -4,6 +4,6 @@ if($file) {
     $file.Open()
     $file.Document.Activate()
     $file.Document.Selection.StartOfDocument()
-    $file.Document.ReplaceText("@Html.DisplayForModel(`"TestClientDialogs`")`n@section Scripts {`n    @Html.DisplayForModel(`"TestClientReferences`")", "@section Scripts {")
+	$file.Document.ReplaceText( "@model HelpPageApiModel`n@section Scripts {`n    @Html.DisplayForModel(`"TestClientDialogs`")`n    @Html.DisplayForModel(`"TestClientReferences`")`n}","@model HelpPageApiModel")
 	$file.Save()
 }

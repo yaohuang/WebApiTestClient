@@ -6,7 +6,7 @@ if($file) {
     $file.Document.Selection.StartOfDocument()
 	if(!$file.Document.MarkText("@Html.DisplayForModel(`"TestClientDialogs`")"))
 	{
-		$file.Document.ReplaceText("@section Scripts {", "@Html.DisplayForModel(`"TestClientDialogs`")`n@section Scripts {`n    @Html.DisplayForModel(`"TestClientReferences`")")
+		$file.Document.ReplaceText("@model HelpPageApiModel", "@model HelpPageApiModel`n@section Scripts {`n    @Html.DisplayForModel(`"TestClientDialogs`")`n    @Html.DisplayForModel(`"TestClientReferences`")`n}")
 		$file.Save()
 	}
 	else
