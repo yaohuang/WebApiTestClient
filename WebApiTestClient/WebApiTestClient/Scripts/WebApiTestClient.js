@@ -26,6 +26,9 @@ var emptyTestClientModel =
         }
 
         // cleanup path
+        while (path.indexOf("&&") >= 0) {
+            path = path.replace("&&", "&");
+        }
         path = path.replace("/?", "?");
         path = path.replace("?&", "?");
 
