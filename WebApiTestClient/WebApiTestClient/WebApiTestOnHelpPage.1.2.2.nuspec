@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>WebApiTestOnHelpPage</id>
+        <version>1.2.2</version>
+        <title>ASP.NET Web API Test Client For Web API HelpPage</title>
+        <authors>wuchangx@gmail.com</authors>
+        <licenseUrl>https://github.com/wuchang/WebApiTestClient/blob/master/LICENSE.md</licenseUrl>
+        <projectUrl>https://github.com/wuchang/WebApiTestClient</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A simple Test Client built on top of ASP.NET Web API Help Page.</description>
+        <summary>A simple Test Client built on top of ASP.NET Web API Help Page.</summary>
+        <language>en-US</language>
+        <tags>ASP.NET Web API Test Client</tags>
+        <dependencies>
+            <dependency id="knockoutjs" version="2.2.0" />
+            <dependency id="jQuery.UI.Combined" version="1.9.2" />
+            <dependency id="Microsoft.AspNet.WebApi.HelpPage" version="5.2.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml.pp" target="content\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml.pp" />
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" target="content\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" />
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\Areas\HelpPage\TestClient.css" target="content\Areas\HelpPage\TestClient.css" />
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\Scripts\WebApiTestClient.js" target="content\Scripts\WebApiTestClient.js" />
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\tools\Install.ps1" target="tools\install.ps1" />
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\tools\Uninstall.ps1" target="tools\uninstall.ps1" />
+        <file src="E:\workcode\WebApiTestClient\wuchang\WebApiTestClient\WebApiTestClient\readme.txt" target="readme.txt" />
+    </files>
+</package>

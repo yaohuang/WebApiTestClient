@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>WebApiTestOnHelpPage</id>
-        <version>1.2</version>
+        <version>1.3.0</version>
         <title>ASP.NET Web API Test Client For Web API HelpPage</title>
         <authors>wuchangx@gmail.com</authors>
         <licenseUrl>https://github.com/wuchang/WebApiTestClient/blob/master/LICENSE.md</licenseUrl>
@@ -13,18 +13,18 @@
         <language>en-US</language>
         <tags>ASP.NET Web API Test Client</tags>
         <dependencies>
-            <dependency id="Microsoft.AspNet.WebApi.HelpPage" version="5.1.0" />
             <dependency id="knockoutjs" version="2.2.0" />
             <dependency id="jQuery.UI.Combined" version="1.9.2" />
+            <dependency id="Microsoft.AspNet.WebApi.HelpPage" version="5.2.2" />
         </dependencies>
     </metadata>
     <files>
-        <file src="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml.pp" target="content\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml.pp" />
-        <file src="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" target="content\Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" />
-        <file src="Areas\HelpPage\TestClient.css" target="content\Areas\HelpPage\TestClient.css" />
-        <file src="Scripts\WebApiTestClient.js" target="content\Scripts\WebApiTestClient.js" />
-        <file src="tools\Install.ps1" target="tools\install.ps1" />
-        <file src="tools\Uninstall.ps1" target="tools\uninstall.ps1" />
+        <file src="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml.pp" target="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientDialogs.cshtml.pp" />
+        <file src="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" target="Areas\HelpPage\Views\Help\DisplayTemplates\TestClientReferences.cshtml" />
+        <file src="Areas\HelpPage\TestClient.css" target="Areas\HelpPage\TestClient.css" />
+        <file src="Scripts\WebApiTestClient.js" target="Scripts\WebApiTestClient.js" />
+        <file src="tools\install.ps1" target="tools\install.ps1" />
+        <file src="tools\uninstall.ps1" target="tools\uninstall.ps1" />
         <file src="readme.txt" target="readme.txt" />
     </files>
 </package>
