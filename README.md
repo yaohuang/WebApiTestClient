@@ -1,5 +1,9 @@
 # Web API Test Client
-A simple Test Client built on top of ASP.NET Web API Help Page.
+
+ASP.NET Web API 在线测试工具，依赖说ASP.NET Web API Help Page.
+
+![demo](docs/images/demo.gif)
+
 
 forked form https://github.com/yaohuang/WebApiTestClient
 
