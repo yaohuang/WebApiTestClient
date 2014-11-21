@@ -1,6 +1,6 @@
 # Web API Test Client
 
-ASP.NET Web API 在线测试工具，依赖说ASP.NET Web API Help Page.
+ASP.NET Web API 在线测试工具，依赖说 ASP.NET Web API Help Page.
 
 ![demo](docs/images/demo.gif)
 
