@@ -1,6 +1,5 @@
 ﻿var testClientModel;
-var emptyTestClientModel =
-{
+var emptyTestClientModel = {
     HttpMethod: '',
     UriPathTemplate: '',
     Samples: {},
@@ -9,19 +8,20 @@ var emptyTestClientModel =
 };
 
 (function () {
-    function BuildUriPath(template, uriParameters) {
+    function buildUriPath(template, uriParameters) {
         var path = template;
         for (var i in uriParameters) {
-            var parameter = uriParameters[i];
-            if (parameter.enabled()) {
-                var parameterValue = parameter.value();
-                if (parameterValue != "") {
-                    var variableName = '{' + parameter.name + '}';
-                    path = path.replace(variableName, parameterValue);
+            if (uriParameters.hasOwnProperty(i)) {
+                var parameter = uriParameters[i];
+                if (parameter.enabled()) {
+                    var parameterValue = parameter.value();
+                    if (parameterValue !== "") {
+                        var variableName = '{' + parameter.name + '}';
+                        path = path.replace(variableName, parameterValue);
+                    }
+                } else {
+                    path = removeUriParameter(path, parameter.name);
                 }
-            }
-            else {
-                path = RemoveUriParameter(path, parameter.name)
             }
         }
 
@@ -30,18 +30,18 @@ var emptyTestClientModel =
         path = path.replace("?&", "?");
 
         // remove trailing '?'
-        if (path.charAt(path.length - 1) == '?') {
+        if (path.charAt(path.length - 1) === '?') {
             path = path.substr(0, path.length - 1);
         }
         // remove trailing '&'
-        if (path.charAt(path.length - 1) == '&') {
+        if (path.charAt(path.length - 1) === '&') {
             path = path.substr(0, path.length - 1);
         }
 
         return path;
     }
 
-    function RemoveUriParameter(template, parameterToRemove) {
+    function removeUriParameter(template, parameterToRemove) {
         var path = template;
         var urlParameter = '{' + parameterToRemove + '}';
         var queryParameter = parameterToRemove + '=' + urlParameter;
@@ -58,25 +58,30 @@ var emptyTestClientModel =
 
         self.UriParameters = new Array();
         for (var i in data.UriParameters) {
-            var uriParameter = data.UriParameters[i];
-            var uriParameterValue = ko.observable(uriParameter.value);
-            var parameterEnabled = ko.observable(true);
-            uriParameterValue.subscribe(function () {
-                self.UriPath(BuildUriPath(self.UriPathTemplate, self.UriParameters));
-            });
-            parameterEnabled.subscribe(function () {
-                self.UriPath(BuildUriPath(self.UriPathTemplate, self.UriParameters));
-            });
-            self.UriParameters.push({ name: uriParameter.name, value: uriParameterValue, enabled: parameterEnabled });
+            if (data.UriParameters.hasOwnProperty(i)) {
+                var uriParameter = data.UriParameters[i];
+                var uriParameterValue = ko.observable(uriParameter.value);
+                var parameterEnabled = ko.observable(true);
+                uriParameterValue.subscribe(function () {
+                    self.UriPath(buildUriPath(self.UriPathTemplate, self.UriParameters));
+                });
+                parameterEnabled.subscribe(function () {
+                    self.UriPath(buildUriPath(self.UriPathTemplate, self.UriParameters));
+                });
+                self.UriParameters
+                    .push({ name: uriParameter.name, value: uriParameterValue, enabled: parameterEnabled });
+            }
         }
 
-        self.RequestHeaders = ko.observableArray();
+        self.RequestHeaders = ko.observableArray(data.headers);
 
         self.RequestMediaType = ko.observable();
 
         var sampleTypes = new Array();
         for (var index in data.Samples) {
-            sampleTypes.push(index);
+            if (data.Samples.hasOwnProperty(index)) {
+                sampleTypes.push(index);
+            }
         };
         self.SampleTypes = sampleTypes;
 
@@ -122,7 +127,7 @@ var emptyTestClientModel =
             var httpMethod = self.HttpMethod();
             var headers = self.RequestHeaders();
             var requestBody = self.ShouldShowBody() ? self.RequestBody() : null;
-            SendRequest(httpMethod, uri, headers, requestBody, function (httpRequest) {
+            sendRequest(httpMethod, uri, headers, requestBody, function (httpRequest) {
                 var httpResponse = getHttpResponse(httpRequest);
                 self.response(httpResponse);
                 $("#testClientResponseDialog").dialog("open");
@@ -137,7 +142,7 @@ var emptyTestClientModel =
             open: function () {
                 jQuery('.ui-widget-overlay').bind('click', function () {
                     jQuery('#testClientDialog').dialog('close');
-                })
+                });
             },
             buttons: {
                 "Send": function () {
@@ -154,7 +159,7 @@ var emptyTestClientModel =
             open: function () {
                 jQuery('.ui-widget-overlay').bind('click', function () {
                     jQuery('#testClientResponseDialog').dialog('close');
-                })
+                });
             }
         });
 
@@ -163,93 +168,120 @@ var emptyTestClientModel =
         });
     }
 
+
+    function decodeSample(sampleString) {
+        return unescape(sampleString).replace(/\+/gi, " ").replace(/\r\n/gi, "\n");
+    }
+
+    function addOrReplaceHeader(headers, headerName, headerValue) {
+        var headerList = headers();
+
+        for (var i in headerList) {
+            if (headerList.hasOwnProperty(i)) {
+                if (headerList[i].name.toLowerCase() === headerName) {
+                    headers.replace(headerList[i], { name: headerList[i].name, value: headerValue });
+                    return;
+                }
+            }
+        }
+
+        headers.push({ name: headerName, value: headerValue });
+    }
+
+    function sendRequest(httpMethod, url, requestHeaders, requestBody, handleResponse) {
+        if (httpMethod.length == 0) {
+            alert("HTTP Method should not be empty");
+            return false;
+        }
+
+        if (url.length == 0) {
+            alert("Url should not be empty");
+            return false;
+        }
+
+        var httpRequest = new XMLHttpRequest();
+        try {
+            httpRequest.open(httpMethod, encodeURI(url), false);
+        }
+        catch (e) {
+            alert("Cannot send request. Check the security setting of your browser if you are sending request to a different domain.");
+            return false;
+        }
+
+        try {
+            for (var i in requestHeaders) {
+                var header = requestHeaders[i];
+                httpRequest.setRequestHeader(header.name, header.value);
+            }
+        } catch (e) {
+            alert("Invalid header.");
+            return false;
+        }
+
+        saveHeaders(requestHeaders);
+
+        httpRequest.onreadystatechange = function () {
+            switch (this.readyState) {
+                case 4:
+                    handleResponse(httpRequest);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        httpRequest.ontimeout = function () {
+            alert("Request timed out.");
+        }
+
+        try {
+            httpRequest.send(requestBody);
+        } catch (e) {
+            alert(e);
+            return false;
+        }
+
+        return true;
+    }
+
+    function getHttpResponse(httpRequest) {
+        var statusCode = httpRequest.status;
+        var statusText = httpRequest.statusText;
+        var responseHeaders = httpRequest.getAllResponseHeaders();
+        var rawResponse = httpRequest.responseText;
+
+        // IE - #1450: sometimes returns 1223 when it should be 204
+        if (statusCode === 1223) {
+            statusCode = 204;
+            statusText = "No Content";
+        }
+
+        var responseStatus = statusCode + "/" + statusText;
+
+        return { status: responseStatus, headers: responseHeaders, content: rawResponse };
+    }
+
+    function loadHeaders(model) {
+        model.headers = amplify.store("testClient_headers") || [];
+    }
+
+    function saveHeaders(headers) {
+        var userHeaders = [];
+        var h;
+        for (var i in headers) {
+            h = headers[i];
+            if (h.name !== "content-length") {
+                userHeaders.push(h);
+            }
+        }
+
+        amplify.store("testClient_headers", userHeaders);
+    }
+
     // Initiate the Knockout bindings
     var initialModel = testClientModel || emptyTestClientModel;
+
+    loadHeaders(initialModel);
+
     ko.applyBindings(new TestClientViewModel(initialModel));
 })();
-
-function decodeSample(sampleString) {
-    return unescape(sampleString).replace(/\+/gi, " ").replace(/\r\n/gi, "\n");
-}
-
-function addOrReplaceHeader(headers, headerName, headerValue) {
-    var headerList = headers();
-    for (var i in headerList) {
-        if (headerList[i].name.toLowerCase() == headerName) {
-            headers.replace(headerList[i], { name: headerList[i].name, value: headerValue });
-            return;
-        }
-    }
-    headers.push({ name: headerName, value: headerValue });
-}
-
-function SendRequest(httpMethod, url, requestHeaders, requestBody, handleResponse) {
-    if (httpMethod.length == 0) {
-        alert("HTTP Method should not be empty");
-        return false;
-    }
-
-    if (url.length == 0) {
-        alert("Url should not be empty");
-        return false;
-    }
-
-    var httpRequest = new XMLHttpRequest();
-    try {
-        httpRequest.open(httpMethod, encodeURI(url), false);
-    }
-    catch (e) {
-        alert("Cannot send request. Check the security setting of your browser if you are sending request to a different domain.");
-        return false;
-    }
-
-    try {
-        for (var i in requestHeaders) {
-            var header = requestHeaders[i];
-            httpRequest.setRequestHeader(header.name, header.value);
-        }
-    } catch (e) {
-        alert("Invalid header.");
-        return false;
-    }
-
-    httpRequest.onreadystatechange = function () {
-        switch (this.readyState) {
-            case 4:
-                handleResponse(httpRequest);
-                break;
-            default:
-                break;
-        }
-    }
-
-    httpRequest.ontimeout = function () {
-        alert("Request timed out.");
-    }
-
-    try {
-        httpRequest.send(requestBody);
-    } catch (e) {
-        alert(e);
-        return false;
-    }
-
-    return true;
-}
-
-function getHttpResponse(httpRequest) {
-    var statusCode = httpRequest.status;
-    var statusText = httpRequest.statusText;
-    var responseHeaders = httpRequest.getAllResponseHeaders();
-    var rawResponse = httpRequest.responseText;
-
-    // IE - #1450: sometimes returns 1223 when it should be 204
-    if (statusCode === 1223) {
-        statusCode = 204;
-        statusText = "No Content";
-    }
-
-    var responseStatus = statusCode + "/" + statusText;
-
-    return { status: responseStatus, headers: responseHeaders, content: rawResponse };
-}
